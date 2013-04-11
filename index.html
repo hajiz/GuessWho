@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>My fb app here</title>
+<script src="js/Utility.js"></script>
+<script src="js/FB.js"></script>
+</head>
+<body>
+<div id="fb-root"></div>
+<input id="userId" value="me"></input>
+<button onclick="loadPosts();">Posts</button>
+<button onclick="loadFriends();">Friends</button>
+<button onclick="show();">Show</button>
+<script>
+window.fbAsyncInit = function() {
+	FB.init({
+		appId : '447479865291202',
+		status : true
+	});
+	// Additional initialization code such as adding Event Listeners goes here
+};
+
+(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) {
+		return;
+	}
+	js = d.createElement(s);
+	js.id = id;
+	js.src = "//connect.facebook.net/en_US/all.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+var next = 'me';
+function updateNext() {
+	next = document.getElementById('userId').value;
+}
+function loadFriends() {
+	updateNext();
+	var me = new Person(next);
+	var list = me.getFriends();
+	window.l = list;
+}
+function loadPosts() {
+	updateNext();
+	var me = new Person(next);
+	var list = me.recentPosts(10);
+	window.l = list;
+}
+function show() {
+	list = window.l;
+	log(list);
+	for (var i = 0, l = 10; i < l; i ++) {
+		var item = list.get(i);
+		if (! item.story)
+			log(item.id + " " + item.name);
+		else
+			log(item.story);
+	}
+}
+
+function login() {
+	FB.login(function(response) {
+		if (response.authResponse) {
+			log('Welcome!  Fetching your information.... ');
+			FB.api('/me', function(response) {
+				log('Good to see you, ' + response.name + '.');
+			});			
+		} else {
+			log('User cancelled login or did not fully authorize.');
+		}
+	});
+}
+</script>
+<div id="list"></div>
+</body>
+</html>
