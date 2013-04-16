@@ -12,4 +12,12 @@ var Person = function (id) {
 	this.getFriends = function () {
 		return LazyFactory.fetch('/'+this.id+'/friends');
 	};
+	
+	this.getLinks = function () {
+		return LazyFactory.fetch('/'+this.id+'/links?fields=message,link,name');
+	};
+	
+	this.getStatuses = function () {
+		return LazyFactory.fetch('/'+this.id+'/statuses?fields=message');
+	};
 }
