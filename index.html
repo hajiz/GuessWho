@@ -96,7 +96,7 @@ function retrieve(id) {
 	list.html("");
 	posts.then = function (data) {
 		for (key in data) {
-			if (Math.random() < 0.1)
+			if (Math.random() < 1)
 				list.append(statusTemplate
 						.replace(/{message}/g,data[key].message)
 						.replace(/{id}/g,data[key].id)
@@ -111,7 +111,7 @@ function retrieve(id) {
 				data[key].name = "";
 			if (typeof data[key].message === "undefined")
 				data[key].message = "";
-			if (Math.random() < 0.1)
+			if (Math.random() < 1)
 				list.append(linkTemplate
 						.replace(/{message}/g,data[key].message)
 						.replace(/{id}/g,data[key].id)
@@ -154,7 +154,7 @@ function login() {
 		} else {
 			log('User cancelled login or did not fully authorize.');
 		}
-	});
+	}, { scope: 'read_stream' });
 }
 </script>
 <div class="container bordered">
