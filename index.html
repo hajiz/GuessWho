@@ -35,14 +35,16 @@ a, a:hover
 <body>
 <script src="js/Utility.js"></script>
 <script src="js/FB.js"></script>
+<script src="config.js"></script>
 <script src="http://code.jquery.com/jquery.js"></script>
 
 <script src="bootstrap/js/bootstrap.js"></script>
 <div id="fb-root"></div>
 <script>
+log("using app ID : " + hiddenConfig.appId);
 window.fbAsyncInit = function() {
 	FB.init({
-		appId : '447479865291202',
+		appId : hiddenConfig.appId,
 		status : true
 	});
 	// Additional initialization code such as adding Event Listeners goes here
