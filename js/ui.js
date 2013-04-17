@@ -8,7 +8,7 @@ var game = {
 		var flying = $("#flyingscore");
 		flying.html("+" + this.nextScore);
 		flying.css("top", score.position().top).css("left", score.position().left);
-		flying.show().animate({ top: score.position().top-20 }, 200).fadeOut(500);
+		flying.show().animate({ top: score.position().top-20 }, 400).fadeOut(1200);
 	}
 };
 
