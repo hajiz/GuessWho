@@ -64,7 +64,7 @@ window.fbAsyncInit = function() {
 	fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 </script>
-<div class="container bordered">
+<div style="width:800px;" class="container bordered">
 	<h1>Guess whose posts are these...</h1>
 	<p>
 	So here we go. The game is as easy as this:
@@ -78,7 +78,6 @@ window.fbAsyncInit = function() {
 	<form onsubmit="return false;">
 		<input id="guess" class="input-large" placeholder="Guess Who?"></input>
 	</form>
-	<span id="score" class="badge badge-inverse">0</span>
 	<button class="btn btn-primary btn-medium" id="start" onclick="start();" disabled>Start the game</button>
 	<button class="btn btn-primary btn-medium" style="display: none;" id="guessbtn" onclick="guess();" disabled>
 		<i class="icon-ok icon-white"></i> Guess
@@ -86,6 +85,8 @@ window.fbAsyncInit = function() {
 	<button class="btn btn-primary btn-medium" style="display: none;" id="next" onclick="giveUp();" disabled>
 		<i class="icon-ban-circle icon-white"></i> Give up
 	</button>
+	<span id="score" class="badge badge-inverse">0000</span>
+	<span id="flyingscore" style="position: absolute; display: none;" class="badge badge-important">+0</span>
 	<span id="load">Please wait...</span><span id="status"></span><br/>
 	<div id="list" class="span9"></div>
 </div>

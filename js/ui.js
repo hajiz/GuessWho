@@ -3,9 +3,26 @@ var game = {
 	nextScore : 0,
 	scored : function () {
 		this.score += this.nextScore;
-		$("#score").html(this.score);
+		var score = $("#score");
+		score.html(expandScore(this.score, 4));
+		var flying = $("#flyingscore");
+		flying.html("+" + this.nextScore);
+		flying.css("top", score.position().top).css("left", score.position().left);
+		flying.show().animate({ top: score.position().top-20 }, 200).fadeOut(500);
 	}
 };
+
+function expandScore (score, digits) {
+	var length = (""+score).length;
+	if (length > digits)
+		return score;
+	else {
+		var result = (""+score);
+		for (;length < digits; length ++)
+			result = "0" + result;
+		return result;
+	}
+}
 
 function loadFriends() {
 	var me = new Person('me');
@@ -114,22 +131,22 @@ function guess() {
 		game.scored();
 		status.html("Yaaaaaaaay!! Now next...");
 		clearTimeout(statusTimeout);
-		statusTimeout = setTimeout("$('#status').html('')", 2000);
-		next();
-		start();
+		statusTimeout = setTimeout("$('#status').html('')", 4000);
+		$("#guessbtn").attr("disabled", true);
+		setTimeout("next();start();", 1000);
 	} else {
 		status.html("Not quite right... try again!");
 		clearTimeout(statusTimeout);
-		statusTimeout = setTimeout("$('#status').html('')", 2000);
+		statusTimeout = setTimeout("$('#status').html('')", 4000);
 	}
 	guess.val("");
 }
 
 function giveUp() {
-	var status = $("#status");
-	next();
-	start();
-	status.html("That's fine, guess this one");
+	$("#guessbtn").attr("disabled", true);
+	$("#list").html("");
+	$('#status').html('That\'s fine, guess this one');
+	setTimeout("next();start();", 1000);
 }
 
 function login() {
