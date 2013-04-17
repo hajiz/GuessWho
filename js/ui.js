@@ -129,7 +129,7 @@ function giveUp() {
 	var status = $("#status");
 	next();
 	start();
-	status.html("That's fine, guess this fine");
+	status.html("That's fine, guess this one");
 }
 
 function login() {
