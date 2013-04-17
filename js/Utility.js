@@ -59,6 +59,7 @@ function LazyObject () {
 
 var LazyFactory = {
 	fetch : function (url, method, params) {
+		log("Going for " + url);
 		var lazy = new LazyObject();
 		(function (obj) {
 			FB.api(url, method, params, function(response) {
@@ -69,11 +70,60 @@ var LazyFactory = {
 					obj.data = response;
 					obj.status = obj.completed;
 					if (typeof obj.then === "function") {
+						log("Lazy Factory is calling then on " + url);
 						obj.then(response);
 					}
 				}
 			});
 		}(lazy));
 		return lazy;
+	},
+	
+	groupThen: function (objs, then) {
+		if (typeof objs.length !== "undefined") {
+			var count = objs.length;
+			var uuid = [];
+			for (var i = 0; i < count; i++) {
+				uuid.push(Math.random());
+				log("generating id: " + uuid[i]);
+			}
+			var flags = {};
+			for (var i = 0; i < count; i++) {
+				flags[uuid[i]] = false;
+			}
+			var collector = {
+				flags: flags,
+				collect: function (uuid) {
+					flags[uuid] = true;
+					this.checkAll();
+				},
+				checkAll: function () {
+					log("checking");
+					var all = true;
+					for (key in flags) {
+						if (!flags[key]) {
+							all = false;
+						}
+					}
+					if (all) {
+						log("all received, now calling then...");
+						this.then(objs);
+					}
+				},
+				then: then
+			};
+			for (var i = 0; i < count; i++) {
+				objs[i].then = ((function (id, collector) {
+					return function () {
+						log("collected " + id);
+						collector.collect(id);
+					};
+				})(uuid[i], collector));
+			}
+		} else if (typeof objs.then === "function") {
+			objs.then = then;
+		} else {
+			then(objs);
+		}
 	}
 };

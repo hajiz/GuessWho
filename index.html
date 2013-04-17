@@ -15,7 +15,7 @@
 	border-radius: 10px;
 }
 
-.post
+div.post-container
 {
 	background-color: #3344AA;
 	border-radius: 10px;
@@ -24,7 +24,7 @@
 	padding: 50px;
 }
 
-a, a:hover
+a.post, a.post:hover
 {
 	color: white;
 	font-weight: bold;
@@ -35,6 +35,7 @@ a, a:hover
 <body>
 <script src="js/Utility.js"></script>
 <script src="js/FB.js"></script>
+<script src="js/ui.js"></script>
 <script src="config.js"></script>
 <script src="http://code.jquery.com/jquery.js"></script>
 
@@ -62,108 +63,29 @@ window.fbAsyncInit = function() {
 	js.src = "//connect.facebook.net/en_US/all.js";
 	fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
-
-function loadFriends() {
-	var me = new Person('me');
-	var friends = me.getFriends();
-	var list = $("#list");
-	friends.then = function (data) {
-		$("#load").hide();
-		$("#start").removeAttr("disabled");
-		window.friends = friends;
-		next();
-		var names = [];
-		for (var i = 0; i < friends.data.length; i++)
-			names.push(friends.data[i].name);
-		$("#guess").typeahead({ source: names });
-	};
-}
-
-function next() {
-	var friends = window.friends;
-	var count = friends.data.length;
-	var rand = parseInt(Math.random() * count);
-	window.friend = friends.get(rand);
-}
-
-function retrieve(id) {
-	var friend = new Person(id);
-	var posts = friend.getStatuses();
-	var links = friend.getLinks();
-	var statusTemplate = "<a href='http://facebook.com/{id}'><div class='post'>{message}</div></a>";
-	var linkTemplate = "<a href='http://facebook.com/{id}'><div class='post'>{message}<br><a href='{link}'>{link}</a></div></a>";
-	var list = $("#list");
-	list.html("");
-	posts.then = function (data) {
-		for (key in data) {
-			if (Math.random() < 1)
-				list.append(statusTemplate
-						.replace(/{message}/g,data[key].message)
-						.replace(/{id}/g,data[key].id)
-						);
-		}
-	};
-	links.then = function (data) {
-		for (key in data) {
-			if (data[key].link[0] === '/')
-				data[key].link = "http://www.facebook.com" + data[key].link;
-			if (typeof data[key].name === "undefined")
-				data[key].name = "";
-			if (typeof data[key].message === "undefined")
-				data[key].message = "";
-			if (Math.random() < 1)
-				list.append(linkTemplate
-						.replace(/{message}/g,data[key].message)
-						.replace(/{id}/g,data[key].id)
-						.replace(/{link}/g,data[key].link)
-						.replace(/{name}/g,data[key].name)
-						);
-		}
-	};
-}
-
-function start() {
-	log("showing : " + window.friend.name);
-	$("#start").hide();
-	$("#next").removeAttr("disabled");
-	$("#guessbtn").removeAttr("disabled");
-	retrieve(window.friend.id);
-}
-
-function guess() {
-	var guess = $("#guess");
-	var status = $("#status");
-	if (guess.val() === window.friend.name) {
-		status.html("Yaaaaaaaay!! Now next...");
-		next();
-		start();
-	} else {
-		status.html("Not quite right... try again!");
-	}
-	guess.val("");
-}
-
-function login() {
-	FB.login(function(response) {
-		if (response.authResponse) {
-			log('Welcome!  Fetching your information.... ');
-			FB.api('/me', function(response) {
-				log('Good to see you, ' + response.name + '.');
-			});
-			loadFriends();
-		} else {
-			log('User cancelled login or did not fully authorize.');
-		}
-	}, { scope: 'read_stream' });
-}
 </script>
 <div class="container bordered">
-	<form>
+	<h1>Guess whose posts are these...</h1>
+	<p>
+	So here we go. The game is as easy as this:
+	<ol>
+	<li>Click on the start button. Then you will see some recent posts of a friend.</li>
+	<li>Can you remember who posted them? Guess. You will score if you answer correctly.</li>
+	</ol>
+	Different friends have different scores, and we don't know how these scores are determined either.
+	And that's it. Now <a style="cursor: pointer;" onclick="start();">START</a>.
+	</p>
+	<form onsubmit="return false;">
 		<input id="guess" class="input-large" placeholder="Guess Who?"></input>
 	</form>
+	<span id="score" class="badge badge-inverse">0</span>
 	<button class="btn btn-primary btn-medium" id="start" onclick="start();" disabled>Start the game</button>
-	<button class="btn btn-primary btn-medium" id="guessbtn" onclick="guess();" disabled>Check</button>
-	<button class="btn btn-primary btn-medium" id="next" onclick="next();start();" disabled>Next</button>
+	<button class="btn btn-primary btn-medium" style="display: none;" id="guessbtn" onclick="guess();" disabled>
+		<i class="icon-ok icon-white"></i> Guess
+	</button>
+	<button class="btn btn-primary btn-medium" style="display: none;" id="next" onclick="giveUp();" disabled>
+		<i class="icon-ban-circle icon-white"></i> Give up
+	</button>
 	<span id="load">Please wait...</span><span id="status"></span><br/>
 	<div id="list" class="span9"></div>
 </div>

@@ -14,10 +14,10 @@ var Person = function (id) {
 	};
 	
 	this.getLinks = function () {
-		return LazyFactory.fetch('/'+this.id+'/links?fields=message,link,name');
+		return LazyFactory.fetch('/'+this.id+'/links?fields=message,link,name,created_time');
 	};
 	
 	this.getStatuses = function () {
-		return LazyFactory.fetch('/'+this.id+'/statuses?fields=message');
+		return LazyFactory.fetch('/'+this.id+'/statuses?fields=message,updated_time');
 	};
 }
